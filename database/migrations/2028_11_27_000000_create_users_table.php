@@ -23,6 +23,10 @@ return new class extends Migration
             $table->foreignId('service_id')->constrained('services');
             $table->foreignId('specialiter_id')->constrained('specialiters');
             $table->foreignId('role_id')->constrained('roles'); 
+            $table->string('create')->nullable();
+            $table->string('read')->nullable();
+            $table->string('update')->nullable();
+            $table->string('delete')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

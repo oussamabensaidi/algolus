@@ -55,7 +55,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            // 'telephone'=> ['required', 'string','max:10','min:10' ],
+            'telephone'=> ['required', 'string','max:10','min:10' ],
             'type'=> ['required'],
             'service_id'=> ['required'],
             'specialiter_id'=> ['required'],
@@ -74,6 +74,13 @@ class RegisterController extends Controller
         $request = request();
         $imageOriginalName = $request->file('image')->getClientOriginalName();
         $request->file('image')->storeAs('public', $imageOriginalName);
+
+
+
+        $createbox = $request->input('createbox', false);
+        $storedValue = $createbox ? 1 : 0;
+
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -84,9 +91,10 @@ class RegisterController extends Controller
             'service_id'=>$data['service_id'],
             'specialiter_id'=>$data['specialiter_id'],
             'role_id'=>$data['role_id'],
+            'create' => $storedValue,
         ]);
         $originalFilePath = 'storage/app/path/to/your/image.jpg';
-$newFilePath = 'public/images/image.jpg';
+        $newFilePath = 'public/images/image.jpg';
 Storage::move($originalFilePath, $newFilePath);
     }
 }

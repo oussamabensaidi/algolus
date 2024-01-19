@@ -21,6 +21,7 @@ public function login(){
 return view("dash.login");
 
 }
+
 public function register(){
     $service= Service::all();
     $role= Role::all();   

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('fichiers', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->unsignedBigInteger('dossier_id');
-            $table->foreign('dossier_id')->references('id')->on('dossiers');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

@@ -48,4 +48,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+
+    public function dossier()
+    {
+        return $this->hasMany(Dossier::class, 'user_id', 'id');
+    }
+    public function fichier()
+    {
+        return $this->hasMany(Fichier::class, 'user_id', 'id');
+    }
 }

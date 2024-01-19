@@ -116,12 +116,12 @@
             @endforeach
         </select>   
                 </div>
-               
+              
                 <div class="mb-4">
                   <div class="form-check">
                     <label class="form-check-label text-muted">
-                      <input type="checkbox" class="form-check-input">
-                      I agree to all Terms & Conditions
+                      <input type="checkbox" class="form-check-input" name="createbox">
+                      peut cree
                     </label>
                   </div>
                 </div>
