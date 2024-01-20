@@ -55,6 +55,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Dossier::class, 'user_id', 'id');
     }
+    public function history()
+    {
+        return $this->hasMany(History::class, 'user_id', 'id');
+    }
     public function fichier()
     {
         return $this->hasMany(Fichier::class, 'user_id', 'id');

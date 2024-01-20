@@ -10,6 +10,9 @@
         <div class="row">
             <div class="col-6">
 <button class="btn btn-success"><a href="{{route('dash.dossier.create')}}">cree dossier</a></button>
+@if (session('msg'))
+<div class="alert"> {{ session('msg') }}</div>
+@endif
             </div>
         </div>
 
@@ -26,16 +29,24 @@
         </thead>
         <tbody>
             @foreach ($dossier as $d)
-                
-            
             <tr>
             <th>{{$d->name}}</th>
             <td>{{$d->user->name}}</td>
-            <td>{{$d->created_at}}</td>
+            <td>{{$d->file_number}}</td>
             <td>
                 <button type="button" class="btn btn-primary"><i class="mdi mdi-eye-outline"></i></button>
                 <a href="{{route('dash.dossier.edit',['id'=>$d->id])}}"><button type="button" class="btn btn-success"><i class="mdi mdi-pencil-outline"></i></button></a>
-            <button type="button" class="btn btn-danger"><i class="mdi mdi-trash-can-outline"></i></button>
+                
+                <form action="{{route('dash.dossier.delete',['id'=>$d->id])}}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    
+                        <button type="submit" class="btn btn-danger">
+                            <i class="mdi mdi-trash-can-outline"></i>
+                        </button>
+            
+
+                </form>
             </td>
             </tr>
             

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\dashController;
 use App\Http\Controllers\dossierController;
+use App\Http\Controllers\HistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,14 +38,15 @@ Route::get('/dash/dossier/index', [dossierController::class, 'index'])->name('da
 Route::get('/dash/dossier/show/{id}', [dossierController::class, 'show'])->name('dash.dossier.show');
 Route::get('/dash/dossier/create', [dossierController::class, 'create'])->name('dash.dossier.create');
 Route::post('/dash/dossier/store', [dossierController::class, 'store'])->name('dash.dossier.store');
-
 Route::get('/dash/dossier/edit/{id}', [dossierController::class, 'edit'])->name('dash.dossier.edit');
-
 Route::get('downloadFile/public/uploads/{user_service}/{user_id}/{f_name}', [dossierController::class, 'downloadFile']);
-
-Route::put('/dash/dossier/update', [dossierController::class, 'update'])->name('dash.dossier.update');
+Route::delete('deleteFile/{id}', [dossierController::class, 'deleteFile'])->name('deleteFile');
+Route::put('addFile', [dossierController::class, 'addFile'])->name('addFile');
+Route::put('/dash/dossier/update/{id}', [dossierController::class, 'update'])->name('dash.dossier.update');
 Route::delete('/dash/dossier/delete/{id}', [dossierController::class, 'destroy'])->name('dash.dossier.delete');
 
+
+Route::get('/dash/history/index', [HistoryController::class, 'index'])->name('dash.history.index');
 });
 
 require __DIR__.'/auth.php';

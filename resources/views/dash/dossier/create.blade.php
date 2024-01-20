@@ -37,7 +37,7 @@
             <div class="row align-items-center py-3">
                 <div class="col-md-3 ps-5">
 
-                <h6 class="mb-0">Upload CV</h6>
+                <h6 class="mb-0">Upload fichier</h6>
 
                 </div>
                 <div class="col-md-9 pe-5">

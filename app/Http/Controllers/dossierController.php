@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Dossier;
 use App\Models\Fichier;
+use App\Models\History;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Http\Response;
-
+use Illuminate\Support\Facades\File; 
 
 class dossierController extends Controller
 {
@@ -58,20 +59,15 @@ class dossierController extends Controller
             'name' => $userFolder . '/' . $fileName,
         ]);
     }
-    return redirect()->route('dash.index');
+
+History::create([
+'user_id'=>$user->id,
+'description'=> 'le utulisateur : ` '.$user->name.' ` a cree le dossier : '.$request->input('dossiername'),
+]);
+    return redirect()->route('dash.dossier.index');
 
 }
 return redirect()->route('dash.dossier.create')->with(['erorr' => 'msg_eror_dossier_deja_cree']);
-
-
-        
-    
-
-
-
-
-
-
     }
     public function show(string $id)
     {
@@ -95,15 +91,60 @@ return redirect()->route('dash.dossier.create')->with(['erorr' => 'msg_eror_doss
      */
     public function update(Request $request, string $id)
     {
-        
-        $dossier = Dossier::find($id);
-        $dossier->name = 'Paris to London';
+        $user = auth()->user();
+        $dossier = Dossier::findOrFail($id);
+        $oldnom = $dossier->name;
+        $dossier->name = $request->input('name');
         $dossier->save();
+
+        History::create([
+            'user_id'=>$user->id,
+            'description'=> 'le utulisateur :" '.$user->name.' " a modifier le nom de dossier : " '.$oldnom.' "vers un novau nom que est : ` '.$dossier->name." `. le id c'est : ".$dossier->id,
+            ]);
+        return redirect()->route('dash.dossier.edit',['id'=>$id]);
     }
 
 
     public function downloadFile($user_service ,$user_id , $f_name){
+        $user = auth()->user();
+        History::create([
+            'user_id'=>$user->id,
+            'description'=> 'le utulisateur :` '.$user->name.' ` a telecharger le fichier depuit ce lien :  '.public_path("storage/public/uploads/".$user_service."/".$user_id."/".$f_name)
+        ]);
     return response()->download(public_path("storage/public/uploads/".$user_service."/".$user_id."/".$f_name));
+}
+    public function deleteFile($id){
+        $file = Fichier::findOrFail($id);
+        $user = auth()->user();
+        History::create([
+            'user_id'=>$user->id,
+            'description'=> 'le utulisateur : ` '.$user->name.' ` a supprimer le fichier depuit ce lien :'.public_path("storage/".$file->name)
+        ]);
+        File::delete(public_path("storage/".$file->name));
+        $file->delete();
+        return redirect()->back();
+}
+    public function addFile(Request $request ){
+
+
+        $user = $request->user();
+        $userFolder = 'public/uploads/'.$user->service_id .'/'. $user->id;
+
+
+        foreach ($request->file('dossierfiles') as $file) {
+            $fileName = now()->format('Y-m-d').'__'.$file->getClientOriginalName();
+            $file->move(Storage::disk('public')->path($userFolder), $fileName);
+            Fichier::create([
+                'user_id' => $user->id,
+                'name' => $userFolder . '/' . $fileName,
+            ]);
+            History::create([
+                'user_id'=>$user->id,
+                'description'=> 'le utulisateur : ` '.$user->name.' ` a ajouter un fichier de lien : '.$userFolder . '/' . $fileName
+            ]);
+
+        }
+        return redirect()->back();
 }
 
     /**
@@ -111,7 +152,19 @@ return redirect()->route('dash.dossier.create')->with(['erorr' => 'msg_eror_doss
      */
     public function destroy(string $id)
     {
-        //
+        $folder = Dossier::findOrFail($id);
+        
+        $user = auth()->user();
+        History::create([
+            'user_id'=>$user->id,
+            'description'=> 'le utulisateur : ` '.$user->name.' ` a supprimer le dossier depuit ce lien :'.public_path("storage/public/uploads/".$folder->user_id)
+        ]);
+        $directories = public_path("storage/public/uploads/".$folder->user_id);
+        File::deleteDirectory( $directories);
+
+        $folder->delete();
+        // return redirect()->back()->with(['msg' => "vous avez supprimer dossier :".$folder->name]);
+        return redirect()->back()->with(['msg' => public_path("storage/public/uploads/".$folder->user_id)]);
     }
     
 }
